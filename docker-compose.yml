@@ -1,0 +1,92 @@
+version: "3.3"
+services:
+
+  #1 Worker
+  worker:
+    image: "sudoanand/piesocket-worker:v8.0.4" #source develpoment, TODO:// replace with env var. last stable: v8.0.0, v7.0.8, v7.0.5, v7.0.0, v6.0.2, v5.0.9
+    container_name: worker
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      # - PIE_SKIP_CONNECTION_DECREASE=1
+      # - PIE_SKIP_PRESENCE_SYNC=1
+      - PIE_SOCKET_HOST=piehttpd
+      - PIE_REDIS_CHANNEL=messages
+
+      - PIE_MYSQL_HOST=piesocket.com
+      - PIE_MYSQL_USER=root
+      - PIE_MYSQL_PASSWORD=Empire@1998
+      - PIE_MYSQL_DATABASE=piesocket
+
+      - PIE_REDIS_URL=${REDIS_CACHE}
+      - PIE_REDIS_ANALYTICS_URL=${REDIS_ANALYTICS}
+
+      - PIE_LOG_LEVEL=error
+    volumes:
+      - ./mnt:/mnt
+    extra_hosts:
+        - "piehttpd:127.0.0.1"
+    ulimits:
+      nofile:
+        soft: "200000"
+        hard: "1000000"
+
+  #2 Pusher-worker
+  pusher:
+    image: "sudoanand/piesocket-worker-v4:v1.0.2" 
+    container_name: pusher
+    ports:
+      - "6001:6001"
+    environment:
+      - SOKETI_ADAPTER_DRIVER=redis
+      - SOKETI_ADAPTER_REDIS_PREFIX=v4
+      - SOKETI_DB_REDIS_HOST=164.90.253.111
+      - SOKETI_DB_REDIS_PORT=6379
+      - SOKETI_DB_REDIS_DB=0
+      - SOKETI_DB_REDIS_USERNAME=default
+      - SOKETI_DB_REDIS_PASSWORD=RKMlp4cyxZFRxTLAsD31e/nsalOXq5LK8hqxeZgpC2Y5YJ01B9mZfOLfkpDMOf+6tyYLMUGJ6cxW9lUO
+      - SOKETI_DB_REDIS_KEY_PREFIX=v4
+      - SOKETI_APP_MANAGER_DRIVER=mysql
+      - SOKETI_DB_MYSQL_HOST=piesocket.com
+      - SOKETI_DB_MYSQL_PORT=3306
+      - SOKETI_DB_MYSQL_USERNAME=root
+      - SOKETI_DB_MYSQL_PASSWORD=Empire@1998
+      - SOKETI_DB_MYSQL_DATABASE=piesocket
+      
+
+  #3 Publisher
+  publisher:
+    image: "sudoanand/piesocket-publisher:v7.0.10" #stable-history: v5.0.1 v5.0.0, v4.3.1
+    container_name: publisher
+    ports:
+      - "8082:8082"
+    environment:
+      - PIE_REDIS_URL=${REDIS_CACHE}
+
+      - PIE_MYSQL_HOST=piesocket.com
+      - PIE_MYSQL_USER=root
+      - PIE_MYSQL_PASSWORD=Empire@1998
+      - PIE_MYSQL_DATABASE=piesocket
+      - PIE_MYSQL_PORT=3306
+
+      - PIE_MONGO_URL=${MONGO_URL}
+    ulimits:
+      nofile:
+        soft: "200000"
+        hard: "1000000"
+
+  #4 Connection and message count processor 
+  analytics:
+    image: "sudoanand/piesocket-worker-analytics:v4.0.6"
+    container_name: analytics
+    volumes:
+      - ./mnt:/mnt
+    ports:
+      - "8083:8083"
+    environment:
+      - PIE_REDIS_URL=${REDIS_CACHE}
+      - PIE_REDIS_ANALYTICS_URL=${REDIS_ANALYTICS}
+
+      - PIE_LOG_DIR=/mnt/storage/logs
+      - PIE_MONGO_URL=${MONGO_URL}
