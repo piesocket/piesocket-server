@@ -1,11 +1,12 @@
-# PieSocket Server
+# PieSocket Realtime Server
 
-This project launches piesocket server containers with Docker.
-
-##  Pre-requisites
-You need docker and docker-composer installed in your system to run piesocket-server.
+This project launches a PieSocket server on your local machine.
 
 
 ## Gettings Started
-- Clone the repository `git clone git@github.com:piesocket/piesocket-server.git`
-- Launch piesocket-server container `docker-compose up -d`
+- Install `piectl` with `npm i -g piectl`
+- Run `pie socket serve` or `npx pie socket serve` to launch the server
+- Admin panel should be live on `http://localhost:4000`
+
+## Support
+Visit pie.host

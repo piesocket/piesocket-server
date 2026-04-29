@@ -1,1 +1,11 @@
 mnt/storage/*
+
+# Binary release artifacts — upload these as GitHub Release assets instead
+history/**/*.exe
+history/**/piesocket-linux-*
+history/**/piesocket-macos-*
+history/**/piesocket-win-*
+latest/*.exe
+latest/piesocket-linux-*
+latest/piesocket-macos-*
+latest/piesocket-win-*
