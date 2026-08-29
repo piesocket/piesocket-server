@@ -9,3 +9,4 @@ latest/*.exe
 latest/piesocket-linux-*
 latest/piesocket-macos-*
 latest/piesocket-win-*
+.DS_Store
