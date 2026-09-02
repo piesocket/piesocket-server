@@ -5,6 +5,23 @@ All notable changes to PieSocket Server are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v5.0.5 - 2026-09-02
+
+### Added
+- **v4 protocol (`/v4/:channel`)** — a single WebSocket connection can subscribe
+  to multiple channels with `system:subscribe` / `system:unsubscribe` control
+  frames. The connect-time channel stays the default; other messages target it
+  unless they carry a `system::channel` field.
+- **Delta-based presence on v4** — `system:member_joined` / `system:member_left`
+  carry only the member that changed instead of the whole roster; use
+  `system:get_members` to (re)fetch the full list. The same identified user
+  across several connections counts as one member.
+- **Binary on v4 needs no opt-in** — any binary WebSocket frame is delivered as a
+  `system:binary` event; `?binary=1` / `binary-` channels are no longer required.
+- **v3 and v4 traffic is fully isolated.** Publish to v4 clients with the new
+  `POST /api/v4/publish`, and read a v4 channel's presence roster with
+  `POST /api/v4/members`. `POST /api/publish` and `POST /api/members` now target
+  v3. Management endpoints (`/api/management/*`) are unchanged and apply to both.
 
 ## [4.7.7] - 2026-08-27
 
