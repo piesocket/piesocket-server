@@ -5,7 +5,16 @@ All notable changes to PieSocket Server are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v5.0.5 - 2026-09-02
+## v5.0.2 - 2026-09-03
+
+### Changed
+- **v4 frames name their channel.** Every frame delivered on a `/v4/` connection
+  now carries a `system::channel` field — the same key a client sets to address a
+  secondary subscription — so a multiplexed client can route inbound messages to
+  the right channel. The `system:binary` frame's `channel` field was renamed to
+  `system::channel` to match.
+
+## v5.0.0 - 2026-09-02
 
 ### Added
 - **v4 protocol (`/v4/:channel`)** — a single WebSocket connection can subscribe
